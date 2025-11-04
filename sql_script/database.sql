@@ -61,7 +61,6 @@ CREATE TABLE `tokens` (
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
   CHECK (`expires_at` > `created_at`),
   INDEX `idx_tokens_user` (`user_id`),
-  INDEX `idx_tokens_token` (`refresh_token`),
   INDEX `idx_tokens_expires` (`expires_at`)
 );
 
