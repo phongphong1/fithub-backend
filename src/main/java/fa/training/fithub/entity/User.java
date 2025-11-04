@@ -55,7 +55,7 @@ public class User {
     private String coverUrl;
 
     @Lob
-    @Column(name = "bio")
+    @Column(name = "bio", columnDefinition = "text")
     private String bio;
 
     @ColumnDefault("'gymer'")
