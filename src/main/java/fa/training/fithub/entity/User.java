@@ -12,7 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -22,6 +24,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
+@Builder
+@RequiredArgsConstructor
 @Table(name = "users", schema = "fithub")
 public class User {
     @Id

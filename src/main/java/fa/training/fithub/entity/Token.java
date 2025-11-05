@@ -13,7 +13,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -24,6 +26,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
+@Builder
+@RequiredArgsConstructor
 @Table(name = "tokens", schema = "fithub")
 public class Token {
     @Id
