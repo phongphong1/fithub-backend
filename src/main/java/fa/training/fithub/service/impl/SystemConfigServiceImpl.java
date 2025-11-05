@@ -15,7 +15,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
     @Override
     public Optional<String> getValue(String key) {
-        return systemConfigRepository.findByKey(key)
+        return systemConfigRepository.findByConfigKey(key)
                         .map(config -> config.getConfigValue());
     }
 

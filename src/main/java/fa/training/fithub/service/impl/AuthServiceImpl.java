@@ -2,12 +2,11 @@ package fa.training.fithub.service.impl;
 
 import fa.training.fithub.dto.RegisterRequest;
 import fa.training.fithub.dto.RegisterResponse;
-import fa.training.fithub.entity.SystemConfig;
 import fa.training.fithub.entity.Token;
 import fa.training.fithub.entity.User;
-import fa.training.fithub.enums.Role;
 import fa.training.fithub.enums.TokenType;
-import fa.training.fithub.repository.SystemConfigRepository;
+import fa.training.fithub.exception.DuplicateEmailException;
+import fa.training.fithub.exception.DuplicateUsernameException;
 import fa.training.fithub.repository.TokenRepository;
 import fa.training.fithub.repository.UserRepository;
 import fa.training.fithub.service.AuthService;
@@ -18,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -36,10 +34,8 @@ public class AuthServiceImpl implements AuthService {
     private final static String EMAIL_TOKEN_EXPIRE_KEY = "email_verification_token_expiry_hours";
     private final static int EMAIL_TOKEN_EXPIRE_DEFAULT = 24;
 
-
     @Value("${app.base-url}")
     private String baseUrl;
-
 
     @Override
     public Token generateToken(String username) {
@@ -51,10 +47,10 @@ public class AuthServiceImpl implements AuthService {
 
         // Kiểm tra username và email đã tồn tại
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            throw new RuntimeException("Username đã tồn tại!");
+            throw new DuplicateUsernameException("Username đã tồn tại!");
         }
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            throw new RuntimeException("Email đã tồn tại!");
+            throw new DuplicateEmailException("Email đã tồn tại!");
         }
 
         // Tạo user mới
@@ -79,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         tokenRepository.save(verificationToken);
 
-        //Gửi email xác thực
+        // Gửi email xác thực
         String verificationLink = baseUrl + "/api/auth/verify-email?token=" + tokenValue;
         Map<String, Object> variables = new HashMap<>();
         variables.put("fullname", savedUser.getFullName());
@@ -90,8 +86,7 @@ public class AuthServiceImpl implements AuthService {
                 savedUser,
                 "Xác thực địa chỉ email",
                 "email-verification",
-                variables
-        );
+                variables);
 
         return RegisterResponse.builder()
                 .userId(savedUser.getId())
