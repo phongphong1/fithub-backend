@@ -35,12 +35,12 @@ CREATE TABLE `users` (
   `email` VARCHAR(255) UNIQUE NOT NULL,
   `full_name` VARCHAR(100) NOT NULL,
   `date_of_birth` DATE NULL,
-  `gender` ENUM('male', 'female', 'other') NULL,
+  `gender` ENUM('MALE', 'FEMALE', 'OTHER') NULL,
   `avatar_url` VARCHAR(255) NULL,
   `cover_url` VARCHAR(255) NULL,
   `bio` TEXT NULL,
-  `role` ENUM('gymer', 'trainer', 'admin', 'system_admin') NOT NULL DEFAULT 'gymer',
-  `status` ENUM('active', 'inactive', 'banned') NOT NULL DEFAULT 'inactive',
+  `role` ENUM('GYMER', 'TRAINER', 'ADMIN', 'SYSTEM_ADMIN') NOT NULL DEFAULT 'GYMER',
+  `status` ENUM('ACTIVE', 'INACTIVE', 'BANNED') NOT NULL DEFAULT 'INACTIVE',
   `last_login_at` DATETIME NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -52,7 +52,7 @@ CREATE TABLE `users` (
 CREATE TABLE `tokens` (
   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
   `user_id` BIGINT NOT NULL,
-  `type` ENUM('refresh', 'reset_password', 'email_verification', 'other') NOT NULL,
+  `type` ENUM('REFRESH', 'RESET_PASSWORD', 'EMAIL_VERIFICATION', 'OTHER') NOT NULL,
   `token` VARCHAR(512) NOT NULL UNIQUE,
   `is_active` BOOLEAN NOT NULL DEFAULT TRUE,
   `expires_at` DATETIME NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE `system_config` (
   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
   `config_key` VARCHAR(100) UNIQUE NOT NULL,
   `config_value` TEXT NOT NULL,
-  `data_type` ENUM('string', 'integer', 'decimal', 'boolean', 'json') NOT NULL DEFAULT 'string',
+  `data_type` ENUM('STRING', 'INTEGER', 'DECIMAL', 'BOOLEAN', 'JSON') NOT NULL DEFAULT 'STRING',
   `category` VARCHAR(50) NOT NULL,
   `description` VARCHAR(500) NULL,
   `is_editable` BOOLEAN NOT NULL DEFAULT TRUE,
@@ -91,8 +91,8 @@ CREATE TABLE `posts` (
   `title` VARCHAR(255) NOT NULL,
   `content` TEXT NOT NULL,
   `image_url` VARCHAR(255) NULL,
-  `status` ENUM('pending', 'published', 'draft', 'archived', 'deleted', 'rejected') NOT NULL DEFAULT 'draft',
-  `visibility` ENUM('public', 'private') NOT NULL DEFAULT 'public',
+  `status` ENUM('PENDING', 'PUBLISHED', 'DRAFT', 'ARCHIVED', 'DELETED', 'REJECTED') NOT NULL DEFAULT 'DRAFT',
+  `visibility` ENUM('PUBLIC', 'PRIVATE') NOT NULL DEFAULT 'PUBLIC',
   `total_likes` INT NOT NULL DEFAULT 0,
   `total_comments` INT NOT NULL DEFAULT 0,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -111,7 +111,7 @@ CREATE TABLE `interactions` (
   `user_id` BIGINT NOT NULL,
   `post_id` BIGINT NOT NULL,
   `parent_id` BIGINT NULL,
-  `type` ENUM('like', 'comment', 'save') NOT NULL,
+  `type` ENUM('LIKE', 'COMMENT') NOT NULL,
   `content` TEXT NULL,
   `media_url` VARCHAR(255) NULL,
   `is_deleted` BOOLEAN NOT NULL DEFAULT FALSE,
@@ -135,7 +135,7 @@ CREATE TABLE `notifications` (
   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
   `user_id` BIGINT NOT NULL,
   `sender_id` BIGINT NULL,
-  `type` ENUM('like', 'comment', 'course_enroll', 'lesson_complete', 'comment_replied', 'system_notification', 'other') NOT NULL,
+  `type` ENUM('LIKE', 'COMMENT', 'COURSE_ENROLL', 'LESSON_COMPLETE', 'COMMENT_REPLIED', 'SYSTEM_NOTIFICATION', 'OTHER') NOT NULL,
   `reference_id` BIGINT NULL,
   `reference_type` VARCHAR(50) NULL,
   `content` TEXT NOT NULL,
@@ -168,8 +168,8 @@ CREATE TABLE `courses` (
   `description` TEXT NULL,
   `price` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
   `thumbnail_url` VARCHAR(255) NULL,
-  `difficulty_level` ENUM('beginner', 'intermediate', 'advanced') NOT NULL DEFAULT 'beginner',
-  `status` ENUM('draft', 'published', 'archived') NOT NULL DEFAULT 'draft',
+  `difficulty_level` ENUM('BEGINNER', 'INTERMEDIATE', 'ADVANCED') NOT NULL DEFAULT 'BEGINNER',
+  `status` ENUM('DRAFT', 'PUBLISHED', 'ARCHIVED') NOT NULL DEFAULT 'DRAFT',
   `is_featured` BOOLEAN NOT NULL DEFAULT FALSE,
   `total_enrollments` INT NOT NULL DEFAULT 0,
   `average_rating` DECIMAL(3, 2) NULL,
@@ -194,7 +194,7 @@ CREATE TABLE `lessons` (
   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
   `course_id` BIGINT NOT NULL,
   `title` VARCHAR(255) NOT NULL,
-  `content_type` ENUM('video', 'article', 'practice') NOT NULL,
+  `content_type` ENUM('VIDEO', 'ARTICLE', 'PRACTICE') NOT NULL,
   `content_url` VARCHAR(255) NULL,
   `content_body` TEXT NULL,
   `order_index` INT NOT NULL,
@@ -212,7 +212,7 @@ CREATE TABLE `enrollments` (
   `course_id` BIGINT NOT NULL,
   `enrolled_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `purchase_price` DECIMAL(10, 2) NOT NULL,
-  `status` ENUM('active', 'completed') NOT NULL DEFAULT 'active',
+  `status` ENUM('ACTIVE', 'COMPLETED') NOT NULL DEFAULT 'ACTIVE',
   `progress_percentage` DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
   `completed_at` DATETIME NULL,
   
@@ -271,7 +271,7 @@ CREATE TABLE `coin_ledger` (
   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
   `wallet_id` BIGINT NOT NULL,
   `amount` DECIMAL(18, 4) NOT NULL,
-  `transaction_type` ENUM('top_up', 'purchase', 'sale_revenue', 'withdrawal') NOT NULL,
+  `transaction_type` ENUM('TOP_UP', 'PURCHASE', 'SALE_REVENUE', 'WITHDRAWAL') NOT NULL,
   `reference_id` BIGINT NULL,
   `description` VARCHAR(255) NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -302,7 +302,7 @@ CREATE TABLE `withdrawal_requests` (
   `payout_info_id` BIGINT NOT NULL,
   `token_amount` DECIMAL(18, 4) NOT NULL,
   `vnd_amount` DECIMAL(12, 2) NOT NULL,
-  `status` ENUM('pending', 'processed', 'rejected') NOT NULL DEFAULT 'pending',
+  `status` ENUM('PENDING', 'PROCESSED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
   `requested_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `note` TEXT NULL,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -319,9 +319,9 @@ CREATE TABLE `payment_transactions` (
   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
   `user_id` BIGINT NOT NULL,
   `amount` DECIMAL(18, 4) NOT NULL,
-  `transaction_type` ENUM('deposit', 'purchase', 'refund', 'withdrawal') NOT NULL,
-  `payment_method` ENUM('bank_transfer', 'credit_card', 'vnpay', 'zalopay') NULL,
-  `status` ENUM('pending', 'processing', 'completed', 'failed', 'cancelled') NOT NULL DEFAULT 'pending',
+  `transaction_type` ENUM('DEPOSIT', 'PURCHASE', 'REFUND', 'WITHDRAWAL') NOT NULL,
+  `payment_method` ENUM('BANK_TRANSFER', 'CREDIT_CARD', 'VNPAY', 'ZALOPAY') NULL,
+  `status` ENUM('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
   `reference_id` BIGINT NULL,
   `reference_type` VARCHAR(50) NULL,
   `gateway_transaction_id` VARCHAR(255) NULL,
@@ -349,9 +349,9 @@ CREATE TABLE `reports` (
   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
   `reporter_user_id` BIGINT NOT NULL,
   `reported_id` BIGINT NOT NULL,
-  `reported_type` ENUM('user', 'post', 'interaction', 'course') NOT NULL,
+  `reported_type` ENUM('USER', 'POST', 'INTERACTION', 'COURSE') NOT NULL,
   `reason` TEXT NOT NULL,
-  `status` ENUM('pending', 'reviewed', 'resolved', 'dismissed') NOT NULL DEFAULT 'pending',
+  `status` ENUM('PENDING', 'REVIEWED', 'RESOLVED', 'DISMISSED') NOT NULL DEFAULT 'PENDING',
   `admin_notes` TEXT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -369,7 +369,7 @@ CREATE TABLE `trainer_applications` (
   `qualifications` TEXT NOT NULL,
   `experience_details` TEXT NULL,
   `document_urls` JSON NULL,
-  `status` ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+  `status` ENUM('PENDING', 'APPROVED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
   `admin_feedback` TEXT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -434,10 +434,10 @@ DETERMINISTIC
 BEGIN
   DECLARE result BIGINT;
   
-  -- Tìm user có role = 'system_admin'
+  -- Tìm user có role = 'SYSTEM_ADMIN'
   SELECT id INTO result
   FROM users
-  WHERE role = 'system_admin'
+  WHERE role = 'SYSTEM_ADMIN'
   LIMIT 1;
   
   -- Fallback: nếu không có, return user_id = 1
@@ -476,9 +476,9 @@ CREATE TRIGGER `trg_interactions_after_insert`
 AFTER INSERT ON `interactions`
 FOR EACH ROW
 BEGIN
-  IF NEW.type = 'like' THEN
+  IF NEW.type = 'LIKE' THEN
     UPDATE `posts` SET `total_likes` = `total_likes` + 1 WHERE `id` = NEW.post_id;
-  ELSEIF NEW.type = 'comment' AND NEW.is_deleted = 0 THEN
+  ELSEIF NEW.type = 'COMMENT' AND NEW.is_deleted = 0 THEN
     UPDATE `posts` SET `total_comments` = `total_comments` + 1 WHERE `id` = NEW.post_id;
   END IF;
 END$$
@@ -488,9 +488,9 @@ CREATE TRIGGER `trg_interactions_after_delete`
 AFTER DELETE ON `interactions`
 FOR EACH ROW
 BEGIN
-  IF OLD.type = 'like' THEN
+  IF OLD.type = 'LIKE' THEN
     UPDATE `posts` SET `total_likes` = `total_likes` - 1 WHERE `id` = OLD.post_id;
-  ELSEIF OLD.type = 'comment' AND OLD.is_deleted = 0 THEN
+  ELSEIF OLD.type = 'COMMENT' AND OLD.is_deleted = 0 THEN
     -- Chỉ trừ nếu nó là comment đang hiển thị
     UPDATE `posts` SET `total_comments` = `total_comments` - 1 WHERE `id` = OLD.post_id;
   END IF;
@@ -501,7 +501,7 @@ CREATE TRIGGER `trg_interactions_after_update`
 AFTER UPDATE ON `interactions`
 FOR EACH ROW
 BEGIN
-  IF OLD.type = 'comment' THEN
+  IF OLD.type = 'COMMENT' THEN
     -- Case 1: Xóa mềm một comment đang hiển thị
     IF OLD.is_deleted = 0 AND NEW.is_deleted = 1 THEN
       UPDATE `posts` SET `total_comments` = `total_comments` - 1 WHERE `id` = NEW.post_id;
@@ -517,10 +517,10 @@ CREATE TRIGGER `trg_trainer_applications_after_update`
 AFTER UPDATE ON `trainer_applications`
 FOR EACH ROW
 BEGIN
-  -- Nếu đơn được duyệt (từ trạng thái khác chuyển sang 'approved')
-  IF OLD.status != 'approved' AND NEW.status = 'approved' THEN
+  -- Nếu đơn được duyệt (từ trạng thái khác chuyển sang 'APPROVED')
+  IF OLD.status != 'APPROVED' AND NEW.status = 'APPROVED' THEN
     UPDATE `users`
-    SET `role` = 'trainer', `status` = 'active'
+    SET `role` = 'TRAINER', `status` = 'ACTIVE'
     WHERE `id` = NEW.user_id;
   END IF;
 END$$
@@ -699,7 +699,7 @@ BEGIN
           ELSE `completed_at`
         END,
         `status` = CASE
-          WHEN v_progress >= 100 THEN 'completed'
+          WHEN v_progress >= 100 THEN 'COMPLETED'
           ELSE `status`
         END
     WHERE `user_id` = NEW.user_id AND `course_id` = v_course_id;

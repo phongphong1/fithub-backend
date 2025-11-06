@@ -68,7 +68,7 @@ public class LoginServiceImpl implements LoginService {
         }
 
         // Check status account
-        if (user.getStatus() == UserStatus.banned || user.getStatus() == UserStatus.inactive) {
+        if (user.getStatus() == UserStatus.BANNED || user.getStatus() == UserStatus.INACTIVE) {
             throw new ForbiddenException(
                     String.format("Account with identifier '%s' is %s", identifier, user.getStatus())
             );

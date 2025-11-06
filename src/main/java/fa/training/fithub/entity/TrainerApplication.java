@@ -13,12 +13,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
@@ -27,6 +31,8 @@ import java.util.Map;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "trainer_applications", schema = "fithub")
 public class TrainerApplication {
     @Id
@@ -52,7 +58,7 @@ public class TrainerApplication {
     private Map<String, Object> documentUrls;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'pending'")
+    @ColumnDefault("'PENDING'")
     @Column(name = "status", nullable = false)
     private ApplicationStatus status;
 
@@ -60,11 +66,11 @@ public class TrainerApplication {
     @Column(name = "admin_feedback", columnDefinition = "text")
     private String adminFeedback;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
+    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 

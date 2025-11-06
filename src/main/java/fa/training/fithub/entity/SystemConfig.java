@@ -1,18 +1,32 @@
 package fa.training.fithub.entity;
 
 import fa.training.fithub.enums.DataType;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "system_config", schema = "fithub")
 public class SystemConfig {
     @Id
@@ -30,8 +44,10 @@ public class SystemConfig {
     @Column(name = "config_value", nullable = false, columnDefinition = "text")
     private String configValue;
 
-    @Enumerated(EnumType.STRING)  // đảm bảo Hibernate dùng VARCHAR
-    @Column(name = "data_type", length = 255)
+    @NotNull
+    @ColumnDefault("'STRING'")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "data_type", nullable = false)
     private DataType dataType;
 
     @Size(max = 50)
@@ -49,12 +65,12 @@ public class SystemConfig {
     private Boolean isEditable = true;
 
     @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
     @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
+    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
