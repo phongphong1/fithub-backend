@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác thực tài khoản FitHub</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc; /* Màu nền xám nhạt */
+            color: #333;
+        }
+        .wrapper {
+            width: 100%;
+            padding: 20px 0;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .header-brand {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50; /* Màu tối cho thương hiệu */
+            text-decoration: none;
+        }
+        .card {
+            max-width: 550px;
+            margin: 20px auto;
+            background-color: #ffffff; /* Thẻ trắng */
+            border: 1px solid #e0e0e0;
+            border-radius: 12px; /* Bo góc mềm mại hơn */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .card-content {
+            padding: 40px;
+        }
+        .greeting {
+            font-size: 22px;
+            font-weight: 600;
+            color: #111;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .text {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .button-cta {
+            display: inline-block;
+            background-color: #2563eb; /* Màu xanh dương hiện đại */
+            color: #ffffff !important;
+            font-size: 17px;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 16px 35px; /* Nút to, rõ ràng hơn */
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        /* Nút dự phòng khi :hover không hoạt động trên email */
+        .button-cta:hover {
+            background-color: #1d4ed8;
+        }
+        .expiry {
+            font-size: 14px;
+            color: #777;
+            text-align: center;
+        }
+        .fallback-link {
+            font-size: 12px;
+            color: #999;
+            text-align: left;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            word-break: break-all;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 0 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+
+    <div class="header">
+        <a href="#" class="header-brand">FitHub</a>
+
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+
+            <h1 class="greeting">
+                Chào <span th:text="${fullname}">bạn</span>,
+            </h1>
+
+            <p class="text" th:text="${action_reason}">
+                Chào mừng bạn đến với FitHub! Chỉ còn một bước nữa để kích hoạt tài khoản của bạn. Vui lòng nhấp vào nút bên dưới.
+            </p>
+
+            <div class="button-container">
+                <a th:href="${verification_link}" class="button-cta">
+                    Kích hoạt tài khoản
+                </a>
+            </div>
+
+            <p class="expiry">
+                Link này sẽ hết hạn trong <strong th:text="${expiry_time}">15</strong> giờ.
+            </p>
+
+            <div class="fallback-link">
+                <p style="margin-top: 0;">Nếu nút không hoạt động, vui lòng sao chép và dán link này vào trình duyệt của bạn:</p>
+                <a th:href="${verification_link}" th:text="${verification_link}" style="color: #555;">
+                    https://fithub.com/verify?token=...
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 FitHub. Mọi quyền được bảo lưu.</p>
+        <p>Bạn nhận được email này vì đã đăng ký tài khoản tại FitHub. Nếu không phải bạn, vui lòng bỏ qua.</p>
+    </div>
+
+</div>
+</body>
+</html>

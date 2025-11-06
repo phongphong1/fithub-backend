@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${subject_line}">Mã Xác Thực</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 500px; /* Giới hạn chiều rộng trên màn hình lớn */
+            margin: 20px auto;
+            padding: 25px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .header {
+            font-size: 22px;
+            font-weight: 600;
+            color: #222;
+            margin-top: 0;
+        }
+        .intro-text {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 25px;
+        }
+        .code-box {
+            background-color: #f4f4f7; /* Màu nền cho hộp code */
+            border-radius: 5px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .code {
+            font-size: 36px; /* Kích thước font lớn cho mã */
+            font-weight: 700; /* In đậm */
+            color: #111;
+            letter-spacing: 3px; /* Tăng khoảng cách chữ */
+            display: block;
+        }
+        .expiry-text {
+            font-size: 14px;
+            color: #888; /* Màu xám cho văn bản phụ */
+            text-align: center;
+            margin-top: -10px; /* Kéo lên gần hộp code hơn */
+            margin-bottom: 30px;
+        }
+        .footer-note {
+            font-size: 14px;
+            color: #888;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<!--subject_line: Tiêu đề chính của email (ví dụ: "Mã Xác Thực Của Bạn")-->
+
+<!--action_reason: Lý do gửi mã (ví dụ: "để đặt lại mật khẩu", "để xác nhận đăng nhập")-->
+
+<!--verification_code: Mã OTP (ví dụ: "123456")-->
+
+<!--expiry_time: Thời gian hết hạn (ví dụ: "10 phút")-->
+
+<div class="container">
+    <h1 class="header" th:text="${subject_line}">Mã Xác Thực Của Bạn</h1>
+
+    <p class="intro-text">
+        Chào bạn,
+    </p>
+    <p class="intro-text">
+        Vui lòng sử dụng mã dưới đây để <strong th:text="${action_reason}">hoàn tất hành động của bạn</strong>.
+    </p>
+
+    <div class="code-box">
+        <span class="code" th:text="${verification_code}">123456</span>
+    </div>
+
+    <p class="expiry-text">
+        Mã này có hiệu lực trong <strong th:text="${expiry_time}">10</strong> phút.
+    </p>
+
+    <p class="footer-note">
+        Nếu bạn không yêu cầu mã này, vui lòng bỏ qua email một cách an toàn.
+    </p>
+</div>
+</body>
+</html>
