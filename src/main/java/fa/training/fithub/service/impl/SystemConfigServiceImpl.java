@@ -11,7 +11,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SystemConfigServiceImpl implements SystemConfigService {
 
-    private SystemConfigRepository systemConfigRepository;
+    private final SystemConfigRepository systemConfigRepository;
 
     @Override
     public Optional<String> getValue(String key) {

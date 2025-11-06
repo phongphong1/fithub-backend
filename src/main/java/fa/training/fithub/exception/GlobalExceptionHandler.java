@@ -52,4 +52,48 @@ public class GlobalExceptionHandler {
                 return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
 
+        @ExceptionHandler(InvalidTokenException.class)
+        @ResponseStatus(HttpStatus.BAD_REQUEST)
+        public ResponseEntity<ApiResponse<Object>> handleInvalidToken(InvalidTokenException ex) {
+                ApiResponse<Object> response = ApiResponse.builder()
+                                .success(false)
+                                .message(ex.getMessage())
+                                .data(null)
+                                .build();
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(ExpiredTokenException.class)
+        @ResponseStatus(HttpStatus.GONE)
+        public ResponseEntity<ApiResponse<Object>> handleExpiredToken(ExpiredTokenException ex) {
+                ApiResponse<Object> response = ApiResponse.builder()
+                                .success(false)
+                                .message(ex.getMessage())
+                                .data(null)
+                                .build();
+                return new ResponseEntity<>(response, HttpStatus.GONE);
+        }
+
+        @ExceptionHandler(AlreadyVerifiedException.class)
+        @ResponseStatus(HttpStatus.OK)
+        public ResponseEntity<ApiResponse<Object>> handleAlreadyVerified(AlreadyVerifiedException ex) {
+                ApiResponse<Object> response = ApiResponse.builder()
+                                .success(true)
+                                .message(ex.getMessage())
+                                .data(null)
+                                .build();
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        @ExceptionHandler(UserNotFoundException.class)
+        @ResponseStatus(HttpStatus.NOT_FOUND)
+        public ResponseEntity<ApiResponse<Object>> handleUserNotFound(UserNotFoundException ex) {
+                ApiResponse<Object> response = ApiResponse.builder()
+                                .success(false)
+                                .message(ex.getMessage())
+                                .data(null)
+                                .build();
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
 }

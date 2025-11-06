@@ -17,6 +17,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
@@ -43,7 +45,7 @@ public class SystemConfig {
     private String configValue;
 
     @NotNull
-    @ColumnDefault("'string'")
+    @ColumnDefault("'STRING'")
     @Enumerated(EnumType.STRING)
     @Column(name = "data_type", nullable = false)
     private DataType dataType;
@@ -63,12 +65,12 @@ public class SystemConfig {
     private Boolean isEditable = true;
 
     @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
     @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
+    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
