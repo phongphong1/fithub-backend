@@ -1,4 +1,4 @@
-package fa.training.fithub.dto;
+package fa.training.fithub.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

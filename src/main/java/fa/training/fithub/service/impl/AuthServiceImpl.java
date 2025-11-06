@@ -1,10 +1,10 @@
 package fa.training.fithub.service.impl;
 
 import fa.training.fithub.constants.MessageConstants;
-import fa.training.fithub.dto.ApiResponse;
-import fa.training.fithub.dto.RegisterRequest;
-import fa.training.fithub.dto.RegisterResponse;
-import fa.training.fithub.dto.ResendVerificationEmailRequest;
+import fa.training.fithub.dto.request.ResendVerificationEmailRequest;
+import fa.training.fithub.dto.request.RegisterRequest;
+import fa.training.fithub.dto.response.ApiResponse;
+import fa.training.fithub.dto.response.RegisterResponse;
 import fa.training.fithub.entity.Token;
 import fa.training.fithub.entity.User;
 import fa.training.fithub.enums.TokenType;

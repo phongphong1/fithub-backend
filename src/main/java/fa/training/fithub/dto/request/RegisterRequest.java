@@ -1,4 +1,4 @@
-package fa.training.fithub.dto;
+package fa.training.fithub.dto.request;
 
 import fa.training.fithub.enums.Gender;
 import jakarta.validation.constraints.Email;

@@ -1,4 +1,4 @@
-package fa.training.fithub.dto;
+package fa.training.fithub.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ApiResponse<T> {
-    private boolean success;
-    private T data;
-    private String message;
+public class RegisterResponse {
+    private Long userId;
+    private String username;
+    private String email;
 }
