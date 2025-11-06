@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -89,11 +91,16 @@ public class AuthServiceImpl implements AuthService {
         String tokenValue = UUID.randomUUID().toString();
         int tokenExpiryHours = systemConfigService.getInteger(EMAIL_TOKEN_EXPIRE_KEY, EMAIL_TOKEN_EXPIRE_DEFAULT);
 
+        LocalDateTime nowUtc = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime expiryUtc = nowUtc.plusHours(tokenExpiryHours);
+
         Token verificationToken = Token.builder()
                 .token(tokenValue)
                 .user(user)
-                .expiresAt(Instant.now().plusSeconds(tokenExpiryHours * 60 * 60))
                 .type(TokenType.EMAIL_VERIFICATION)
+                .isActive(true)
+                .createdAt(nowUtc)
+                .expiresAt(expiryUtc)
                 .build();
         tokenRepository.save(verificationToken);
 
@@ -127,7 +134,7 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidTokenException("Link kích hoạt không hợp lệ!");
         }
 
-        if (token.getExpiresAt().isBefore(Instant.now())) {
+        if (token.getExpiresAt().isBefore(LocalDateTime.now(ZoneOffset.UTC))) {
             throw new ExpiredTokenException("Link kích hoạt đã hết hạn!");
         }
 

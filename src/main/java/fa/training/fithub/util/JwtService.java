@@ -23,28 +23,31 @@ public class JwtService {
     private final SystemConfigRepository systemConfigRepository;
 
     private SecretKey secretKey;
-
     private long accessTokenExpirationMs;
     private long refreshTokenExpirationMs;
+    private long refreshTokenLongExpirationMs; // cho rememberMe
 
     @Value("${app.jwt.secret}")
     private String secret;
 
     @PostConstruct
     public void init() {
-        // Khởi tạo SecretKey
         secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
-        // Lấy expiration từ database
         Optional<SystemConfig> accessConfig = systemConfigRepository.findByConfigKey("access_token_expiry_minutes");
-        Optional<SystemConfig> refreshConfig = systemConfigRepository.findByConfigKey("refresh_token_expiry_days");
+        Optional<SystemConfig> refreshConfig = systemConfigRepository.findByConfigKey("refresh_token_expiry_days_short");
+        Optional<SystemConfig> refreshLongConfig = systemConfigRepository.findByConfigKey("refresh_token_expiry_days");
 
         accessTokenExpirationMs = accessConfig
-                .map(c -> Long.parseLong(c.getConfigValue()) * 60 * 1000) // phút → ms
+                .map(c -> Long.parseLong(c.getConfigValue()) * 60 * 1000)
                 .orElse(60 * 60 * 1000L); // default 1h
 
         refreshTokenExpirationMs = refreshConfig
-                .map(c -> Long.parseLong(c.getConfigValue()) * 24 * 60 * 60 * 1000) // ngày → ms
+                .map(c -> Long.parseLong(c.getConfigValue()) * 24 * 60 * 60 * 1000)
+                .orElse(24 * 60 * 60 * 1000L); // default 1 ngày
+
+        refreshTokenLongExpirationMs = refreshLongConfig
+                .map(c -> Long.parseLong(c.getConfigValue()) * 24 * 60 * 60 * 1000)
                 .orElse(30 * 24 * 60 * 60 * 1000L); // default 30 ngày
     }
 
@@ -57,11 +60,13 @@ public class JwtService {
                 .compact();
     }
 
-    public String generateRefreshToken(User user) {
+    // Tạo refresh token tùy theo rememberMe
+    public String generateRefreshToken(User user, boolean rememberMe) {
+        long exp = rememberMe ? refreshTokenLongExpirationMs : refreshTokenExpirationMs;
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpirationMs))
+                .setExpiration(new Date(System.currentTimeMillis() + exp))
                 .signWith(secretKey)
                 .compact();
     }
@@ -82,7 +87,8 @@ public class JwtService {
         return accessTokenExpirationMs / 1000;
     }
 
-    public long getRefreshExpSeconds() {
-        return refreshTokenExpirationMs / 1000;
+    public long getRefreshExpSeconds(boolean rememberMe) {
+        return (rememberMe ? refreshTokenLongExpirationMs : refreshTokenExpirationMs) / 1000;
     }
 }
+

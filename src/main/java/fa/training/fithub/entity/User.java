@@ -25,6 +25,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -80,14 +81,14 @@ public class User {
     private UserStatus status;
 
     @Column(name = "last_login_at")
-    private Instant lastLoginAt;
+    private LocalDateTime lastLoginAt;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
 }
