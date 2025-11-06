@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class LoginRequestDTO {
-    private String username;   // có thể cho phép email luôn (xử lý ở service)
+    private String emailOrUsername;
     private String password;
+    private boolean rememberMe;
 }
