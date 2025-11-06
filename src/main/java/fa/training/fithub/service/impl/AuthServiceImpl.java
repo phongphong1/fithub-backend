@@ -1,5 +1,6 @@
 package fa.training.fithub.service.impl;
 
+import fa.training.fithub.constants.MessageConstants;
 import fa.training.fithub.dto.ApiResponse;
 import fa.training.fithub.dto.RegisterRequest;
 import fa.training.fithub.dto.RegisterResponse;
@@ -56,10 +57,10 @@ public class AuthServiceImpl implements AuthService {
 
         // Kiểm tra username và email đã tồn tại
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            throw new DuplicateUsernameException("Username đã tồn tại!");
+            throw new DuplicateUsernameException(MessageConstants.Validation.USERNAME_ALREADY_EXISTS);
         }
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            throw new DuplicateEmailException("Email đã tồn tại!");
+            throw new DuplicateEmailException(MessageConstants.Validation.EMAIL_ALREADY_EXISTS);
         }
 
         // Tạo user mới
@@ -100,13 +101,13 @@ public class AuthServiceImpl implements AuthService {
         String verificationLink = frontendUrl + "/verify-email?token=" + tokenValue;
         Map<String, Object> variables = new HashMap<>();
         variables.put("fullname", user.getFullName());
-        variables.put("action_reason", "Cảm ơn bạn đã đăng ký tài khoản. Vui lòng nhấp vào nút bên dưới để hoàn tất.");
+        variables.put("action_reason", MessageConstants.Auth.REGISTER_THANK_YOU);
         variables.put("verification_link", verificationLink);
         variables.put("expiry_time", String.valueOf(tokenExpiryHours));
 
         emailNotificationService.sendEmailWithTemplate(
                 user,
-                "Xác thực địa chỉ email",
+                MessageConstants.Email.EMAIL_VERIFICATION_SUBJECT,
                 "email-verification",
                 variables);
     }
@@ -115,19 +116,19 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public ApiResponse<Object> verifyEmail(String tokenValue) {
         Token token = tokenRepository.findByTokenAndType(tokenValue, TokenType.EMAIL_VERIFICATION)
-                .orElseThrow(() -> new InvalidTokenException("Link kích hoạt không hợp lệ!"));
+                .orElseThrow(() -> new InvalidTokenException(MessageConstants.Token.INVALID_TOKEN));
         User user = token.getUser();
 
         if (user.getStatus() == UserStatus.ACTIVE) {
-            throw new AlreadyVerifiedException("Email đã được xác thực trước đó!");
+            throw new AlreadyVerifiedException(MessageConstants.Email.EMAIL_ALREADY_VERIFIED);
         }
 
         if (!token.getIsActive()) {
-            throw new InvalidTokenException("Link kích hoạt không hợp lệ!");
+            throw new InvalidTokenException(MessageConstants.Token.INVALID_TOKEN);
         }
 
         if (token.getExpiresAt().isBefore(Instant.now())) {
-            throw new ExpiredTokenException("Link kích hoạt đã hết hạn!");
+            throw new ExpiredTokenException(MessageConstants.Token.EXPIRED_TOKEN);
         }
 
         user.setStatus(UserStatus.ACTIVE);
@@ -138,7 +139,7 @@ public class AuthServiceImpl implements AuthService {
 
         return ApiResponse.<Object>builder()
                 .success(true)
-                .message("Xác thực email thành công! Bạn có thể đăng nhập ngay bây giờ.")
+                .message(MessageConstants.Email.EMAIL_VERIFICATION_SUCCESS)
                 .data(null)
                 .build();
     }
@@ -147,10 +148,10 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public ApiResponse<Object> resendVerificationEmail(ResendVerificationEmailRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("Không tìm thấy tài khoản với email này!"));
+                .orElseThrow(() -> new UserNotFoundException(MessageConstants.User.USER_NOT_FOUND_BY_EMAIL));
 
         if (user.getStatus() == UserStatus.ACTIVE) {
-            throw new AlreadyVerifiedException("Email đã được xác thực rồi! Bạn có thể đăng nhập.");
+            throw new AlreadyVerifiedException(MessageConstants.Email.EMAIL_ALREADY_VERIFIED_CAN_LOGIN);
         }
 
         tokenRepository.findAllByUserAndType(user, TokenType.EMAIL_VERIFICATION)
@@ -163,7 +164,7 @@ public class AuthServiceImpl implements AuthService {
 
         return ApiResponse.<Object>builder()
                 .success(true)
-                .message("Email xác thực đã được gửi lại! Vui lòng kiểm tra hộp thư của bạn.")
+                .message(MessageConstants.Email.EMAIL_RESENT_SUCCESS)
                 .data(null)
                 .build();
     }

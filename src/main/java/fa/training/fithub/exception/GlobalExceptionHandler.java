@@ -1,5 +1,6 @@
 package fa.training.fithub.exception;
 
+import fa.training.fithub.constants.MessageConstants;
 import fa.training.fithub.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class GlobalExceptionHandler {
 
                 ApiResponse<Map<String, String>> response = ApiResponse.<Map<String, String>>builder()
                                 .success(false)
-                                .message("Dữ liệu đầu vào không hợp lệ")
+                                .message(MessageConstants.Validation.INVALID_INPUT_DATA)
                                 .data(errors)
                                 .build();
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

@@ -1,5 +1,6 @@
 package fa.training.fithub.controller;
 
+import fa.training.fithub.constants.MessageConstants;
 import fa.training.fithub.dto.ApiResponse;
 import fa.training.fithub.dto.RegisterRequest;
 import fa.training.fithub.dto.RegisterResponse;
@@ -31,7 +32,7 @@ public class AuthController {
 
         ApiResponse<RegisterResponse> response = ApiResponse.<RegisterResponse>builder()
                 .success(true)
-                .message("Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.")
+                .message(MessageConstants.Auth.REGISTER_SUCCESS)
                 .data(registerResponse)
                 .build();
 
