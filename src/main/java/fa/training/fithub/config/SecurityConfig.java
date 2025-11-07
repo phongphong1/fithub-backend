@@ -51,7 +51,8 @@ public class SecurityConfig {
                                                                             // context)
                                                                 "/public/**", // Public API
                                                                 "/error", // Error endpoint
-                                                                "/actuator/health" // Health check
+                                                                "/actuator/health", // Health check
+                                                                "/profile/**"
                                                 ).permitAll()
 
                                                 // All other requests need authentication
