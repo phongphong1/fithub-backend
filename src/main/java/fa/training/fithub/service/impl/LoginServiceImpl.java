@@ -20,10 +20,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 @Service
 @RequiredArgsConstructor
@@ -81,7 +78,7 @@ public class LoginServiceImpl implements LoginService {
         }
 
         // Update last login time (LocalDateTime)
-        user.setLastLoginAt(LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
+        user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
 
         // Just login 1 position
@@ -97,16 +94,15 @@ public class LoginServiceImpl implements LoginService {
         long refreshExpSeconds = jwtService.getRefreshExpSeconds(loginRequestDTO.isRememberMe());
 
         // Save refresh token to database (LocalDateTime)
-        Instant now = Instant.now();
-        ZoneId vietnamZone = ZoneId.of("Asia/Ho_Chi_Minh");
+        LocalDateTime now = LocalDateTime.now();
 
         Token token = Token.builder()
                 .user(user)
                 .type(TokenType.REFRESH)
                 .token(refreshToken)
                 .isActive(true)
-                .createdAt(LocalDateTime.ofInstant(now, vietnamZone))
-                .expiresAt(LocalDateTime.ofInstant(now.plusSeconds(refreshExpSeconds), vietnamZone))
+                .createdAt(now)
+                .expiresAt(now.plusSeconds(refreshExpSeconds))
                 .build();
         tokenRepository.save(token);
 

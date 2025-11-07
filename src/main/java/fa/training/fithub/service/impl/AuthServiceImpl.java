@@ -1,8 +1,8 @@
 package fa.training.fithub.service.impl;
 
 import fa.training.fithub.constants.MessageConstants;
-import fa.training.fithub.dto.request.ResendVerificationEmailRequest;
 import fa.training.fithub.dto.request.RegisterRequest;
+import fa.training.fithub.dto.request.ResendVerificationEmailRequest;
 import fa.training.fithub.dto.response.ApiResponse;
 import fa.training.fithub.dto.response.RegisterResponse;
 import fa.training.fithub.entity.Token;
@@ -25,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
