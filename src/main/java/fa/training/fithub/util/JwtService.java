@@ -35,7 +35,8 @@ public class JwtService {
         secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
         Optional<SystemConfig> accessConfig = systemConfigRepository.findByConfigKey("access_token_expiry_minutes");
-        Optional<SystemConfig> refreshConfig = systemConfigRepository.findByConfigKey("refresh_token_expiry_days_short");
+        Optional<SystemConfig> refreshConfig = systemConfigRepository
+                .findByConfigKey("refresh_token_expiry_days_short");
         Optional<SystemConfig> refreshLongConfig = systemConfigRepository.findByConfigKey("refresh_token_expiry_days");
 
         accessTokenExpirationMs = accessConfig
@@ -71,6 +72,12 @@ public class JwtService {
                 .compact();
     }
 
+    /**
+     * Decode JWT token và trả về Claims
+     * 
+     * @param token JWT token string
+     * @return Claims nếu valid, null nếu invalid hoặc expired
+     */
     public Claims decodeToken(String token) {
         try {
             return Jwts.parser()
@@ -83,6 +90,73 @@ public class JwtService {
         }
     }
 
+    /**
+     * Validate token và trả về username
+     * 
+     * @param token JWT token string
+     * @return Optional<String> username nếu token valid, empty nếu invalid
+     */
+    public Optional<String> validateTokenAndGetUsername(String token) {
+        try {
+            if (token == null || token.isEmpty()) {
+                return Optional.empty();
+            }
+
+            Claims claims = decodeToken(token);
+            if (claims == null) {
+                return Optional.empty();
+            }
+
+            // Check expiration
+            if (claims.getExpiration().before(new Date())) {
+                return Optional.empty();
+            }
+
+            return Optional.ofNullable(claims.getSubject());
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Validate token
+     * 
+     * @param token JWT token string
+     * @return true nếu token valid, false nếu invalid hoặc expired
+     */
+    public boolean isTokenValid(String token) {
+        return validateTokenAndGetUsername(token).isPresent();
+    }
+
+    /**
+     * Get username from token
+     * 
+     * @param token JWT token string
+     * @return username nếu có, null nếu token invalid
+     */
+    public String getUsernameFromToken(String token) {
+        Claims claims = decodeToken(token);
+        return claims != null ? claims.getSubject() : null;
+    }
+
+    /**
+     * Check if token is expired
+     * 
+     * @param token JWT token string
+     * @return true nếu token expired hoặc invalid
+     */
+    public boolean isTokenExpired(String token) {
+        try {
+            Claims claims = decodeToken(token);
+            if (claims == null) {
+                return true;
+            }
+            return claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
     public long getAccessExpSeconds() {
         return accessTokenExpirationMs / 1000;
     }
@@ -91,4 +165,3 @@ public class JwtService {
         return (rememberMe ? refreshTokenLongExpirationMs : refreshTokenExpirationMs) / 1000;
     }
 }
-

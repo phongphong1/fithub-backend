@@ -2,7 +2,9 @@ package fa.training.fithub.controller;
 
 import fa.training.fithub.dto.NotificationDTO;
 import fa.training.fithub.entity.User;
+import fa.training.fithub.repository.UserRepository;
 import fa.training.fithub.service.impl.SystemNotificationService;
+import fa.training.fithub.util.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,20 +31,71 @@ public class NotificationController {
     private static final Logger logger = LoggerFactory.getLogger(NotificationController.class);
 
     private final SystemNotificationService notificationService;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
     /**
      * Endpoint SSE để nhận thông báo real-time
      * 
-     * GET /api/notifications/stream
+     * GET /notifications/stream?token=xxx
      * 
-     * @param authentication Authentication object từ Spring Security
+     * Note: EventSource trong browser không support custom headers,
+     * nên token phải được pass qua query parameter
+     * 
+     * @param token JWT access token từ query parameter
      * @return SseEmitter để gửi events
      */
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter streamNotifications(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        logger.info("User {} connected to notification stream", user.getId());
-        return notificationService.createEmitter(user.getId());
+    public SseEmitter streamNotifications(@RequestParam(required = false) String token) {
+        try {
+            // Validate token và get username - Logic được encapsulate trong JwtService
+            String username = jwtService.validateTokenAndGetUsername(token)
+                    .orElseThrow(() -> {
+                        logger.error("Invalid or missing token for SSE connection");
+                        return new IllegalArgumentException("Invalid or missing authentication token");
+                    });
+
+            // Load user from database
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> {
+                        logger.error("User not found for username: {}", username);
+                        return new RuntimeException("User not found: " + username);
+                    });
+
+            logger.info("User {} ({}) connected to notification stream", user.getId(), username);
+            return notificationService.createEmitter(user.getId());
+
+        } catch (IllegalArgumentException e) {
+            // Token validation error
+            logger.error("Authentication error for SSE: {}", e.getMessage());
+            return createErrorEmitter("Authentication required. Please provide a valid token.");
+
+        } catch (RuntimeException e) {
+            // User not found error
+            logger.error("User not found error: {}", e.getMessage());
+            return createErrorEmitter("User not found. Please login again.");
+
+        } catch (Exception e) {
+            // Other errors
+            logger.error("Error creating SSE connection", e);
+            return createErrorEmitter("Internal server error. Please try again later.");
+        }
+    }
+
+    /**
+     * Helper method để tạo SseEmitter với error message
+     */
+    private SseEmitter createErrorEmitter(String errorMessage) {
+        SseEmitter emitter = new SseEmitter(1000L);
+        try {
+            emitter.send(SseEmitter.event()
+                    .name("error")
+                    .data(errorMessage));
+            emitter.complete();
+        } catch (Exception e) {
+            logger.error("Error sending error event", e);
+        }
+        return emitter;
     }
 
     /**

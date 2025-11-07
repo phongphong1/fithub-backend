@@ -91,7 +91,7 @@ public class AuthServiceImpl implements AuthService {
         String tokenValue = UUID.randomUUID().toString();
         int tokenExpiryHours = systemConfigService.getInteger(EMAIL_TOKEN_EXPIRE_KEY, EMAIL_TOKEN_EXPIRE_DEFAULT);
 
-        LocalDateTime nowUtc = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime nowUtc = LocalDateTime.now();
         LocalDateTime expiryUtc = nowUtc.plusHours(tokenExpiryHours);
 
         Token verificationToken = Token.builder()

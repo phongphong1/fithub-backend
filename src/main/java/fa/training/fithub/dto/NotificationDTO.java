@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -23,5 +24,5 @@ public class NotificationDTO {
     private String referenceType;
     private String content;
     private Boolean isRead;
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 }

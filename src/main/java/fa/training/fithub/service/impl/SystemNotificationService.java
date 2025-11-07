@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -110,7 +111,7 @@ public class SystemNotificationService implements NotificationService {
             notification.setContent(body);
             notification.setReferenceType(subject);
             notification.setIsRead(false);
-            notification.setCreatedAt(Instant.now());
+            notification.setCreatedAt(LocalDateTime.now());
 
             notification = notificationRepository.save(notification);
             logger.info("Saved notification to database for user: {}", recipient.getId());
@@ -142,7 +143,7 @@ public class SystemNotificationService implements NotificationService {
             notification.setUser(recipient);
             notification.setContent(body);
             notification.setIsRead(false);
-            notification.setCreatedAt(Instant.now());
+            notification.setCreatedAt(LocalDateTime.now());
 
             // Xử lý custom data
             if (customData != null) {
