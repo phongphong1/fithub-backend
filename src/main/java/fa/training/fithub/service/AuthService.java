@@ -14,4 +14,6 @@ public interface AuthService {
     ApiResponse<Object> verifyEmail(String token);
 
     ApiResponse<Object> resendVerificationEmail(ResendVerificationEmailRequest request);
+
+    void checkOnePosition(String refreshToken, String accessToken);
 }

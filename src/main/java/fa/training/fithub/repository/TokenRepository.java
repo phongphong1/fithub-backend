@@ -8,9 +8,15 @@ import java.util.Optional;
 
 import fa.training.fithub.enums.TokenType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface TokenRepository extends JpaRepository<Token, Long> {
     Optional<Token> findByTokenAndType(String token, TokenType type);
+
+    Optional<Token> findByToken(String token);
+
+
 
     List<Token> findAllByUserAndType(User user, TokenType type);
 
