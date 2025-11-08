@@ -37,9 +37,6 @@ Dockerfile
 ### VS Code ###
 .vscode/
 
-CONTEXT_PATH_NOTE.md
-SECURITY_CONFIG_GUIDE.md
-SECURITY_QUICK_REF.md
-NOTIFICATION_SYSTEM_README.md
 *.md
+*.bat
 
