@@ -1,37 +1,28 @@
-package fa.training.fithub.example;
+package fa.training.fithub.service.impl;
 
 import fa.training.fithub.entity.User;
-import fa.training.fithub.service.impl.SystemNotificationService;
+import fa.training.fithub.enums.Role;
+import fa.training.fithub.repository.UserRepository;
+import fa.training.fithub.service.CustomNotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Ví dụ về cách sử dụng SystemNotificationService
- * 
- * File này chỉ để tham khảo, không được sử dụng trong production
- */
-@Component
+@Service
 @RequiredArgsConstructor
-public class NotificationServiceExample {
+public class CustomNotificationServiceImpl implements CustomNotificationService {
 
     private final SystemNotificationService notificationService;
+    private final UserRepository userRepository;
 
-    /**
-     * Ví dụ 1: Gửi thông báo đơn giản
-     */
+    @Override
     public void sendSimpleNotification(User user) {
-        notificationService.sendNotification(
-                user,
-                "Welcome",
-                "Chào mừng bạn đến với FitHub!");
+
     }
 
-    /**
-     * Ví dụ 2: Gửi thông báo khi có người like post
-     */
+    @Override
     public void sendLikeNotification(User postOwner, User liker, Long postId) {
         Map<String, String> customData = new HashMap<>();
         customData.put("type", "LIKE");
@@ -48,9 +39,7 @@ public class NotificationServiceExample {
                 customData);
     }
 
-    /**
-     * Ví dụ 3: Gửi thông báo khi có comment mới
-     */
+    @Override
     public void sendCommentNotification(User postOwner, User commenter, Long postId, String commentContent) {
         Map<String, String> customData = new HashMap<>();
         customData.put("type", "COMMENT");
@@ -70,9 +59,7 @@ public class NotificationServiceExample {
                 customData);
     }
 
-    /**
-     * Ví dụ 4: Gửi thông báo đăng ký khóa học thành công
-     */
+    @Override
     public void sendCourseEnrollmentNotification(User user, Long courseId, String courseName) {
         Map<String, String> customData = new HashMap<>();
         customData.put("type", "COURSE_ENROLL");
@@ -90,9 +77,7 @@ public class NotificationServiceExample {
                 customData);
     }
 
-    /**
-     * Ví dụ 5: Gửi thông báo hoàn thành bài học
-     */
+    @Override
     public void sendLessonCompleteNotification(User user, Long lessonId, String lessonName, String courseName) {
         Map<String, String> customData = new HashMap<>();
         customData.put("type", "LESSON_COMPLETE");
@@ -111,11 +96,8 @@ public class NotificationServiceExample {
                 customData);
     }
 
-    /**
-     * Ví dụ 6: Gửi thông báo reply comment
-     */
-    public void sendCommentReplyNotification(User originalCommenter, User replier, Long commentId,
-            String replyContent) {
+    @Override
+    public void sendCommentReplyNotification(User originalCommenter, User replier, Long commentId, String replyContent) {
         Map<String, String> customData = new HashMap<>();
         customData.put("type", "COMMENT_REPLIED");
         customData.put("referenceId", String.valueOf(commentId));
@@ -134,9 +116,7 @@ public class NotificationServiceExample {
                 customData);
     }
 
-    /**
-     * Ví dụ 7: Gửi thông báo hệ thống đến tất cả users
-     */
+    @Override
     public void sendSystemAnnouncementToAll(Iterable<User> users, String announcement) {
         for (User user : users) {
             Map<String, String> customData = new HashMap<>();
@@ -150,24 +130,23 @@ public class NotificationServiceExample {
         }
     }
 
-    /**
-     * Ví dụ 8: Kiểm tra user có đang online không
-     */
-    public boolean isUserOnline(Long userId) {
-        return notificationService.hasActiveConnection(userId);
-    }
+    @Override
+    public void sendTrainerApplicationToAdmin(User user) {
+        Iterable<User> admins = userRepository.findByRole(Role.ADMIN);
 
-    /**
-     * Ví dụ 9: Lấy số lượng thông báo chưa đọc
-     */
-    public long getUnreadCount(User user) {
-        return notificationService.getUnreadCount(user);
-    }
+        String trainerName = user.getFullName();
+        String announcement = String.format("Trainer %s has submitted an application to become a trainer. Please review and approve.", trainerName);
 
-    /**
-     * Ví dụ 10: Đóng tất cả connections của user (khi logout)
-     */
-    public void logoutUser(Long userId) {
-        notificationService.closeUserConnections(userId);
+        for (User admin : admins) {
+            Map<String, String> customData = new HashMap<>();
+            customData.put("type", "SYSTEM_NOTIFICATION");
+
+            notificationService.sendPushNotification(
+                    admin,
+                    "Trainer Application",
+                    announcement,
+                    customData);
+        }
+
     }
 }

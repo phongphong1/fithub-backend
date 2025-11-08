@@ -18,7 +18,7 @@ public class UploadConfigResponse {
 
     // Config version for cache invalidation
     private String configVersion;
-    
+
     // Image configurations
     private List<String> allowedImageFormats;
     private Double maxImageUploadSizeMb;
