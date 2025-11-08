@@ -29,7 +29,6 @@ public class ProfileController {
     public ApiResponse<ProfileResponseDTO> updateProfile(
             @PathVariable int id,
             @RequestBody UpdateProfileRequest updateData) {
-
         ProfileResponseDTO response = profileService.UpdateProfile(updateData,id);
         return new ApiResponse<>(true ,response, "Update Success");
     }
