@@ -4,25 +4,29 @@ import fa.training.fithub.entity.Notification;
 import fa.training.fithub.entity.User;
 import fa.training.fithub.service.NotificationService;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.List;
 import java.util.Map;
 
+@Service
+@RequiredArgsConstructor
 public class EmailNotificationService implements NotificationService {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailNotificationService.class);
     private final String WARN_MESS = "Email notification service not support this method";
 
-    private JavaMailSender javaMailSender;
-    private TemplateEngine templateEngine;
+    private final JavaMailSender javaMailSender;
+    private final TemplateEngine templateEngine;
 
     @Value("${spring.mail.username}")
     private String senderEmail;

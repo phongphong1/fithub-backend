@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FitHub - SSE Notification Test</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .header {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .status.connected {
+        background: #10b981;
+        color: white;
+      }
+
+      .status.disconnected {
+        background: #ef4444;
+        color: white;
+      }
+
+      .controls {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #374151;
+        font-weight: 500;
+      }
+
+      input,
+      button {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      button {
+        background: #667eea;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        transition: background 0.3s;
+        margin-top: 10px;
+      }
+
+      button:hover {
+        background: #5568d3;
+      }
+
+      button:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+      }
+
+      .notifications {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-height: 500px;
+        overflow-y: auto;
+      }
+
+      .notification-item {
+        padding: 15px;
+        border-left: 4px solid #667eea;
+        background: #f9fafb;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        animation: slideIn 0.3s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .notification-item.unread {
+        background: #ede9fe;
+        border-left-color: #8b5cf6;
+      }
+
+      .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .notification-type {
+        font-weight: bold;
+        color: #667eea;
+      }
+
+      .notification-time {
+        font-size: 12px;
+        color: #6b7280;
+      }
+
+      .notification-content {
+        color: #374151;
+        line-height: 1.5;
+      }
+
+      .stats {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .stat-box {
+        flex: 1;
+        background: #f3f4f6;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 5px;
+      }
+
+      .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #667eea;
+      }
+
+      .empty-state {
+        text-align: center;
+        color: #6b7280;
+        padding: 40px;
+      }
+
+      .empty-state svg {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 10px;
+        opacity: 0.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔔 FitHub Notification System</h1>
+        <p style="color: #6b7280; margin-bottom: 10px">
+          Server-Sent Events (SSE) Test Client
+        </p>
+        <span class="status disconnected" id="connectionStatus"
+          >Disconnected</span
+        >
+        <div class="stats">
+          <div class="stat-box">
+            <div class="stat-label">Total Received</div>
+            <div class="stat-value" id="totalCount">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Unread</div>
+            <div class="stat-value" id="unreadCount">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <h2 style="margin-bottom: 15px; color: #374151">Connection Settings</h2>
+        <div class="form-group">
+          <label for="apiUrl">API URL:</label>
+          <input
+            type="text"
+            id="apiUrl"
+            value="http://localhost:8080/api/notifications"
+            placeholder="http://localhost:8080/api/notifications"
+          />
+        </div>
+        <div class="form-group">
+          <label for="authToken">Authorization Token:</label>
+          <input
+            type="text"
+            id="authToken"
+            placeholder="Bearer token here..."
+          />
+        </div>
+        <button id="connectBtn" onclick="toggleConnection()">
+          Connect to SSE
+        </button>
+        <button onclick="sendTestNotification()" id="testBtn" disabled>
+          Send Test Notification
+        </button>
+        <button onclick="markAllAsRead()" id="markAllBtn" disabled>
+          Mark All as Read
+        </button>
+        <button onclick="clearNotifications()">Clear Display</button>
+      </div>
+
+      <div class="notifications">
+        <h2 style="margin-bottom: 15px; color: #374151">Notifications</h2>
+        <div id="notificationList">
+          <div class="empty-state">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+              />
+            </svg>
+            <p>No notifications yet</p>
+            <p style="font-size: 12px; margin-top: 5px">
+              Connect to SSE to receive real-time notifications
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let eventSource = null;
+      let isConnected = false;
+      let totalCount = 0;
+      let unreadCount = 0;
+
+      function updateStatus(connected) {
+        isConnected = connected;
+        const statusEl = document.getElementById("connectionStatus");
+        const connectBtn = document.getElementById("connectBtn");
+        const testBtn = document.getElementById("testBtn");
+        const markAllBtn = document.getElementById("markAllBtn");
+
+        if (connected) {
+          statusEl.textContent = "Connected";
+          statusEl.className = "status connected";
+          connectBtn.textContent = "Disconnect";
+          testBtn.disabled = false;
+          markAllBtn.disabled = false;
+        } else {
+          statusEl.textContent = "Disconnected";
+          statusEl.className = "status disconnected";
+          connectBtn.textContent = "Connect to SSE";
+          testBtn.disabled = true;
+          markAllBtn.disabled = true;
+        }
+      }
+
+      function toggleConnection() {
+        if (isConnected) {
+          disconnect();
+        } else {
+          connect();
+        }
+      }
+
+      function connect() {
+        const apiUrl = document.getElementById("apiUrl").value;
+        const token = document.getElementById("authToken").value;
+
+        if (!token) {
+          alert("Please enter an authorization token");
+          return;
+        }
+
+        // Note: EventSource doesn't support custom headers in browser
+        // For production, consider using WebSocket or pass token as query parameter
+        const sseUrl = `${apiUrl}/stream?token=${encodeURIComponent(token)}`;
+
+        eventSource = new EventSource(sseUrl);
+
+        eventSource.addEventListener("connected", (event) => {
+          console.log("Connected:", event.data);
+          updateStatus(true);
+          showToast("Connected to notification service");
+        });
+
+        eventSource.addEventListener("notification", (event) => {
+          const notification = JSON.parse(event.data);
+          console.log("New notification:", notification);
+          addNotification(notification);
+        });
+
+        eventSource.onerror = (error) => {
+          console.error("SSE Error:", error);
+          updateStatus(false);
+          showToast("Connection error. Trying to reconnect...");
+
+          // Auto reconnect after 5 seconds
+          setTimeout(() => {
+            if (!isConnected) {
+              connect();
+            }
+          }, 5000);
+        };
+      }
+
+      function disconnect() {
+        if (eventSource) {
+          eventSource.close();
+          eventSource = null;
+        }
+        updateStatus(false);
+        showToast("Disconnected from notification service");
+      }
+
+      function addNotification(notification) {
+        const listEl = document.getElementById("notificationList");
+
+        // Remove empty state
+        if (listEl.querySelector(".empty-state")) {
+          listEl.innerHTML = "";
+        }
+
+        const notifEl = document.createElement("div");
+        notifEl.className = `notification-item ${
+          notification.isRead ? "" : "unread"
+        }`;
+        notifEl.innerHTML = `
+                <div class="notification-header">
+                    <span class="notification-type">${notification.type}</span>
+                    <span class="notification-time">${formatTime(
+                      notification.createdAt
+                    )}</span>
+                </div>
+                <div class="notification-content">${notification.content}</div>
+                ${
+                  notification.senderName
+                    ? `<div style="margin-top: 5px; font-size: 12px; color: #6b7280;">From: ${notification.senderName}</div>`
+                    : ""
+                }
+            `;
+
+        listEl.insertBefore(notifEl, listEl.firstChild);
+
+        // Update counts
+        totalCount++;
+        if (!notification.isRead) {
+          unreadCount++;
+        }
+        updateCounts();
+
+        // Show toast
+        showToast(`New ${notification.type} notification`);
+      }
+
+      function formatTime(timestamp) {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diff = Math.floor((now - date) / 1000); // seconds
+
+        if (diff < 60) return "Just now";
+        if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+        return date.toLocaleDateString();
+      }
+
+      function updateCounts() {
+        document.getElementById("totalCount").textContent = totalCount;
+        document.getElementById("unreadCount").textContent = unreadCount;
+      }
+
+      function clearNotifications() {
+        document.getElementById("notificationList").innerHTML = `
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <p>No notifications yet</p>
+                </div>
+            `;
+        totalCount = 0;
+        unreadCount = 0;
+        updateCounts();
+      }
+
+      async function sendTestNotification() {
+        const apiUrl = document.getElementById("apiUrl").value;
+        const token = document.getElementById("authToken").value;
+
+        try {
+          const response = await fetch(`${apiUrl}/test`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token,
+            },
+            body: JSON.stringify({
+              message: "This is a test notification from SSE client",
+            }),
+          });
+
+          if (response.ok) {
+            showToast("Test notification sent!");
+          } else {
+            showToast("Failed to send test notification");
+          }
+        } catch (error) {
+          console.error("Error sending test notification:", error);
+          showToast("Error sending test notification");
+        }
+      }
+
+      async function markAllAsRead() {
+        const apiUrl = document.getElementById("apiUrl").value;
+        const token = document.getElementById("authToken").value;
+
+        try {
+          const response = await fetch(`${apiUrl}/read-all`, {
+            method: "PUT",
+            headers: {
+              Authorization: token,
+            },
+          });
+
+          if (response.ok) {
+            unreadCount = 0;
+            updateCounts();
+
+            // Update UI
+            document
+              .querySelectorAll(".notification-item.unread")
+              .forEach((el) => {
+                el.classList.remove("unread");
+              });
+
+            showToast("All notifications marked as read");
+          } else {
+            showToast("Failed to mark as read");
+          }
+        } catch (error) {
+          console.error("Error marking as read:", error);
+          showToast("Error marking as read");
+        }
+      }
+
+      function showToast(message) {
+        // Simple toast notification
+        console.log("Toast:", message);
+
+        // You can implement a proper toast notification here
+        // For now, just log to console
+      }
+
+      // Load saved settings
+      window.addEventListener("load", () => {
+        const savedUrl = localStorage.getItem("apiUrl");
+        const savedToken = localStorage.getItem("authToken");
+
+        if (savedUrl) document.getElementById("apiUrl").value = savedUrl;
+        if (savedToken) document.getElementById("authToken").value = savedToken;
+      });
+
+      // Save settings
+      document.getElementById("apiUrl").addEventListener("change", (e) => {
+        localStorage.setItem("apiUrl", e.target.value);
+      });
+
+      document.getElementById("authToken").addEventListener("change", (e) => {
+        localStorage.setItem("authToken", e.target.value);
+      });
+    </script>
+  </body>
+</html>
