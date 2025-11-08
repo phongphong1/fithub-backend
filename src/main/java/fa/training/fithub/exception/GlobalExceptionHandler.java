@@ -1,6 +1,7 @@
 package fa.training.fithub.exception;
 
 import fa.training.fithub.dto.response.ApiResponse;
+import fa.training.fithub.constants.MessageConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -44,14 +45,13 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors()
                 .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
 
-        ApiResponse<Map<String, String>> response = ApiResponse.<Map<String, String>>builder()
-                .success(false)
-                .message("Dữ liệu đầu vào không hợp lệ")
-                .data(errors)
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
+                ApiResponse<Map<String, String>> response = ApiResponse.<Map<String, String>>builder()
+                                .success(false)
+                                .message(MessageConstants.Validation.INVALID_INPUT_DATA)
+                                .data(errors)
+                                .build();
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     @ExceptionHandler(DuplicateUsernameException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<ApiResponse<Object>> handleDuplicateUsername(DuplicateUsernameException ex) {
@@ -117,4 +117,6 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+
 }

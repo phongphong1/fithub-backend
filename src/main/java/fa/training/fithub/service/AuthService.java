@@ -1,7 +1,7 @@
 package fa.training.fithub.service;
 
-import fa.training.fithub.dto.ResendVerificationEmailRequest;
 import fa.training.fithub.dto.request.RegisterRequest;
+import fa.training.fithub.dto.request.ResendVerificationEmailRequest;
 import fa.training.fithub.dto.response.ApiResponse;
 import fa.training.fithub.dto.response.RegisterResponse;
 import fa.training.fithub.entity.Token;
@@ -14,4 +14,6 @@ public interface AuthService {
     ApiResponse<Object> verifyEmail(String token);
 
     ApiResponse<Object> resendVerificationEmail(ResendVerificationEmailRequest request);
+
+    void checkOnePosition(String refreshToken, String accessToken);
 }

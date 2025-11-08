@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TokensResponseDTO {
+public class NewAccessTokenResponseDTO {
     private String access_token;
     private String refresh_token;
     private long expires_in; // giây cho access token
     private long refresh_expires_in; // giây cho access token
 }
-
-

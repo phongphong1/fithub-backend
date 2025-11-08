@@ -1,5 +1,6 @@
 package fa.training.fithub.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -9,6 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -18,7 +20,10 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
         @Bean
         public PasswordEncoder passwordEncoder() {
@@ -51,7 +56,9 @@ public class SecurityConfig {
                                                                             // context)
                                                                 "/public/**", // Public API
                                                                 "/error", // Error endpoint
-                                                                "/actuator/health" // Health check
+                                                                "/actuator/health", // Health check
+                                                                "/notifications/stream" // SSE endpoint - token
+                                                                                        // validated in controller
                                                 ).permitAll()
 
                                                 // All other requests need authentication
@@ -59,7 +66,10 @@ public class SecurityConfig {
 
                                 // Session management - stateless (JWT)
                                 .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                                // Add JWT authentication filter
+                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
         }
@@ -90,7 +100,9 @@ public class SecurityConfig {
                                                                 "/auth/verify-email",
                                                                 "/auth/resend-verification-email",
                                                                 "/auth/forgot-password",
-                                                                "/error")
+                                                                "/error",
+                                                                "/notifications/stream") // SSE endpoint - token
+                                                                                         // validated in controller
                                                 .permitAll()
 
                                                 // All other requests need authentication
@@ -98,7 +110,10 @@ public class SecurityConfig {
 
                                 // Session management - stateless (JWT)
                                 .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                                // Add JWT authentication filter
+                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
         }

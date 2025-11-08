@@ -3,33 +3,33 @@ package fa.training.fithub.service.impl;
 
 import fa.training.fithub.dto.ResendVerificationEmailRequest;
 import fa.training.fithub.dto.request.RegisterRequest;
+import fa.training.fithub.dto.request.ResendVerificationEmailRequest;
 import fa.training.fithub.dto.response.ApiResponse;
 import fa.training.fithub.dto.response.RegisterResponse;
 import fa.training.fithub.entity.Token;
 import fa.training.fithub.entity.User;
 import fa.training.fithub.enums.TokenType;
 import fa.training.fithub.enums.UserStatus;
-import fa.training.fithub.exception.AlreadyVerifiedException;
-import fa.training.fithub.exception.DuplicateEmailException;
-import fa.training.fithub.exception.DuplicateUsernameException;
-import fa.training.fithub.exception.ExpiredTokenException;
-import fa.training.fithub.exception.InvalidTokenException;
-import fa.training.fithub.exception.UserNotFoundException;
+import fa.training.fithub.exception.*;
 import fa.training.fithub.repository.TokenRepository;
 import fa.training.fithub.repository.UserRepository;
 import fa.training.fithub.service.AuthService;
 import fa.training.fithub.service.SystemConfigService;
+import fa.training.fithub.util.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -41,6 +41,7 @@ public class AuthServiceImpl implements AuthService {
     private final SystemConfigService systemConfigService;
     private final PasswordEncoder passwordEncoder;
     private final EmailNotificationService emailNotificationService;
+    private final JwtService jwtService;
 
     private final static String EMAIL_TOKEN_EXPIRE_KEY = "email_verification_token_expiry_hours";
     private final static int EMAIL_TOKEN_EXPIRE_DEFAULT = 24;
@@ -174,6 +175,36 @@ public class AuthServiceImpl implements AuthService {
                 .message("Email xác thực đã được gửi lại! Vui lòng kiểm tra hộp thư của bạn.")
                 .data(null)
                 .build();
+    }
+
+    @Override
+    public void checkOnePosition(String refreshToken, String accessToken) {
+        // Check time access token and refresh token (so set time in FE)
+        String checkTimeRefreshToken = jwtService.validateTokenAndGetUsername(refreshToken)
+                .orElseThrow(() ->
+                        new CustomException("Refresh token is invalid or expired", HttpStatus.UNAUTHORIZED)
+                );
+        String checkTimeAccessToken = jwtService.validateTokenAndGetUsername(refreshToken)
+                .orElseThrow(() ->
+                        new CustomException("Access token is invalid or expired", HttpStatus.UNAUTHORIZED)
+                );
+
+
+        String username = jwtService.getUsernameFromToken(refreshToken);
+        if (username == null) {
+            throw new UserNotFoundException("User not found for Session refresh token");
+        }
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+
+        Token token = tokenRepository.findByToken(refreshToken)
+                .orElseThrow(() -> new CustomException("Refresh token not found", HttpStatus.UNAUTHORIZED));
+
+        if (Boolean.FALSE.equals(token.getIsActive())) {
+            throw new CustomException("User logged in from another position", HttpStatus.CONFLICT);
+        }
+
     }
 
 }
