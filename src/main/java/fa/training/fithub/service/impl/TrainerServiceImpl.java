@@ -10,6 +10,7 @@ import fa.training.fithub.exception.UnauthorizedException;
 import fa.training.fithub.exception.UserNotFoundException;
 import fa.training.fithub.repository.TrainerApplicationRepository;
 import fa.training.fithub.repository.UserRepository;
+import fa.training.fithub.service.CustomNotificationService;
 import fa.training.fithub.service.TrainerService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,9 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Implementation of TrainerService
- */
 @Service
 @RequiredArgsConstructor
 public class TrainerServiceImpl implements TrainerService {
@@ -33,6 +31,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     private final TrainerApplicationRepository trainerApplicationRepository;
     private final UserRepository userRepository;
+    private final CustomNotificationService customNotificationService;
 
     @Override
     @Transactional
@@ -94,6 +93,9 @@ public class TrainerServiceImpl implements TrainerService {
 
         logger.info("Trainer application submitted successfully with ID: {} by user: {}",
                 savedApplication.getId(), username);
+
+        // Send notification to admin
+        customNotificationService.sendTrainerApplicationToAdmin(user);
 
         return ApiResponse.builder()
                 .success(true)

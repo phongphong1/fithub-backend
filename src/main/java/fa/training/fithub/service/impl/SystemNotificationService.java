@@ -93,7 +93,7 @@ public class SystemNotificationService implements NotificationService {
     }
 
     /**
-     * Gửi thông báo đến user thông qua SSE
+     * Gửi thông báo hệ thống đến user
      * 
      * @param recipient User nhận thông báo
      * @param subject   Tiêu đề (sử dụng như type hoặc reference)
