@@ -1,5 +1,6 @@
 package fa.training.fithub.service.impl;
 
+import fa.training.fithub.dto.request.UpdateProfileRequest;
 import fa.training.fithub.dto.response.ProfileResponseDTO;
 import fa.training.fithub.entity.User;
 import fa.training.fithub.exception.BadRequestException;
@@ -30,7 +31,26 @@ public class ProfileServiceIml implements ProfileService {
         return modelMapper.map(user, ProfileResponseDTO.class);
     }
     @Override
-    public void UpdateProfile(User u, int id) {
+    public ProfileResponseDTO UpdateProfile(UpdateProfileRequest updateProfile, int id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("User not found"));
 
+        if(updateProfile.getFullName() != null) {
+            user.setFullName(updateProfile.getFullName());
+        }
+        if(updateProfile.getGender() != null) {
+            user.setGender(updateProfile.getGender());
+        }
+        if(updateProfile.getDateOfBirth() != null) {
+            user.setDateOfBirth(updateProfile.getDateOfBirth());
+        }
+        if(updateProfile.getCoverUrl() != null) {
+            user.setCoverUrl(updateProfile.getCoverUrl());
+        }
+        if(updateProfile.getAvatarUrl() != null) {
+            user.setAvatarUrl(updateProfile.getAvatarUrl());
+        }
+        User savedUser = userRepository.save(user);
+        return modelMapper.map(savedUser, ProfileResponseDTO.class);
     }
 }

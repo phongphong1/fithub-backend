@@ -7,9 +7,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UpdateProfileRequest {
     @NotBlank(message = "Full name không được để trống")
     @Size(min = 2, max = 100, message = "Full name phải từ 2 đến 100 ký tự")

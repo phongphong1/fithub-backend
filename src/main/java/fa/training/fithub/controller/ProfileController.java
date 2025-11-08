@@ -1,5 +1,7 @@
 package fa.training.fithub.controller;
 
+import fa.training.fithub.dto.request.UpdateProfileRequest;
+import fa.training.fithub.dto.response.ApiResponse;
 import fa.training.fithub.dto.response.ProfileResponseDTO;
 import fa.training.fithub.service.ProfileService;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,9 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileController {
     private final ProfileService profileService;
     @GetMapping("/{id}")
-    public ResponseEntity<ProfileResponseDTO> getProfile(@PathVariable int id) {
+    public ApiResponse<ProfileResponseDTO> getProfile(@PathVariable int id) {
         ProfileResponseDTO response = profileService.getProfileUserById(id);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ApiResponse<>(true,response,"Success");
+    }
+    @PutMapping("/{id}")
+    public ApiResponse<ProfileResponseDTO> updateProfile(
+            @PathVariable int id,
+            @RequestBody UpdateProfileRequest updateData) {
+
+        ProfileResponseDTO response = profileService.UpdateProfile(updateData,id);
+        return new ApiResponse<>(true ,response, "Update Success");
     }
 
 }
