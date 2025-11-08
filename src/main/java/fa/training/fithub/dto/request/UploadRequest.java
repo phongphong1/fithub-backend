@@ -15,11 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Builder
 public class UploadRequest {
-
     @NotNull(message = "File is required")
     private MultipartFile file;
-
     private String folder;
-
     private String customFileName;
 }
