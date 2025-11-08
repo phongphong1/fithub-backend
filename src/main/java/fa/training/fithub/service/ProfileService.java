@@ -5,6 +5,6 @@ import fa.training.fithub.dto.response.ProfileResponseDTO;
 import fa.training.fithub.entity.User;
 
 public interface ProfileService {
-    ProfileResponseDTO getProfileUserById(int id);
-    ProfileResponseDTO UpdateProfile(UpdateProfileRequest updateProfile, int id);
+    ProfileResponseDTO getProfileUserById(Long id);
+    ProfileResponseDTO UpdateProfile(UpdateProfileRequest updateProfile, Long id);
 }
