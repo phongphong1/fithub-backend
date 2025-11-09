@@ -115,6 +115,7 @@ public class LoginServiceImpl implements LoginService {
                         .access_token(accessToken)
                         .refresh_token(refreshToken)
                         .expires_in(jwtService.getAccessExpSeconds())
+                        .refresh_expires_in(jwtService.getRefreshExpSeconds(loginRequestDTO.isRememberMe()))
                         .build())
                 .build();
     }
