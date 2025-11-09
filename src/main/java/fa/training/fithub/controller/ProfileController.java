@@ -30,7 +30,7 @@ public class ProfileController {
             @PathVariable Long id,
             @RequestBody UpdateProfileRequest updateData) {
         ProfileResponseDTO response = profileService.UpdateProfile(updateData,id);
-        return new ApiResponse<>(true ,response, "Update Success");
+        return new ApiResponse<>(true ,response, "Update Profile Successfuly");
     }
 
 }

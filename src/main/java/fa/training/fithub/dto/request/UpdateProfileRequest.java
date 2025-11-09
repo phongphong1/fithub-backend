@@ -34,5 +34,8 @@ public class UpdateProfileRequest {
 
     @Size(max = 255, message = "Cover URL không được vượt quá 255 ký tự")
     private String coverUrl;
+
+    @Size(max = 1500, message = "Bio không được vượt quá 1500 ký tự")
+    private String bio;
 }
 

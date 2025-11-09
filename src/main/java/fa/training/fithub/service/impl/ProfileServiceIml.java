@@ -38,6 +38,9 @@ public class ProfileServiceIml implements ProfileService {
         if(updateProfile.getFullName() != null) {
             user.setFullName(updateProfile.getFullName());
         }
+        if(updateProfile.getBio() != null) {
+            user.setBio(updateProfile.getBio());
+        }
         if(updateProfile.getGender() != null) {
             user.setGender(updateProfile.getGender());
         }

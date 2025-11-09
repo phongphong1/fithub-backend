@@ -1,12 +1,13 @@
 package fa.training.fithub.controller;
 
-import fa.training.fithub.dto.ResendVerificationEmailRequest;
+
 import fa.training.fithub.constants.MessageConstants;
 import fa.training.fithub.dto.request.ResendVerificationEmailRequest;
 import fa.training.fithub.dto.request.RegisterRequest;
 import fa.training.fithub.dto.response.ApiResponse;
 import fa.training.fithub.dto.response.RegisterResponse;
 import fa.training.fithub.dto.response.*;
+import fa.training.fithub.exception.CustomException;
 import fa.training.fithub.service.AuthService;
 import fa.training.fithub.service.RefreshTokenService;
 import fa.training.fithub.service.UserService;
@@ -69,14 +70,24 @@ public class AuthController {
     @GetMapping("/check-one-position/{refreshToken}/{accessToken}")
     public ResponseEntity<ApiResponse<?>> checkOnePosition(@PathVariable String refreshToken,
                                                            @PathVariable String accessToken) {
-        authService.checkOnePosition(refreshToken, accessToken);
-        ApiResponse<Object> response = ApiResponse.builder()
-                .success(true)
-                .data(refreshToken)
-                .message("Check one position successful")
-                .build();
-        return ResponseEntity.ok(response);
+        try {
+            authService.checkOnePosition(refreshToken, accessToken);
+            ApiResponse<Object> response = ApiResponse.builder()
+                    .success(true)
+                    .data(refreshToken)
+                    .message("Check one position successful")
+                    .build();
+            return ResponseEntity.ok(response);
+        } catch (CustomException ex) {
+            ApiResponse<Object> response = ApiResponse.builder()
+                    .success(false)
+                    .data(null)
+                    .message(ex.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
     }
+
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<NewAccessTokenResponseDTO>> newAccessToken(
