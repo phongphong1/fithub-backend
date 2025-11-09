@@ -25,13 +25,13 @@ public class ProfileServiceIml implements ProfileService {
     private final ModelMapper modelMapper;
 
     @Override
-    public ProfileResponseDTO getProfileUserById(int id) {
+    public ProfileResponseDTO getProfileUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("User not found"));
         return modelMapper.map(user, ProfileResponseDTO.class);
     }
     @Override
-    public ProfileResponseDTO UpdateProfile(UpdateProfileRequest updateProfile, int id) {
+    public ProfileResponseDTO UpdateProfile(UpdateProfileRequest updateProfile, Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
