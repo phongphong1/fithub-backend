@@ -52,7 +52,6 @@ public class GlobalExceptionHandler {
                                 .build();
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-
     @ExceptionHandler(DuplicateUsernameException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<ApiResponse<Object>> handleDuplicateUsername(DuplicateUsernameException ex) {

@@ -74,7 +74,7 @@ public class JwtService {
 
     /**
      * Decode JWT token và trả về Claims
-     * 
+     *
      * @param token JWT token string
      * @return Claims nếu valid, null nếu invalid hoặc expired
      */
@@ -92,7 +92,7 @@ public class JwtService {
 
     /**
      * Validate token và trả về username
-     * 
+     *
      * @param token JWT token string
      * @return Optional<String> username nếu token valid, empty nếu invalid
      */
@@ -120,7 +120,7 @@ public class JwtService {
 
     /**
      * Validate token
-     * 
+     *
      * @param token JWT token string
      * @return true nếu token valid, false nếu invalid hoặc expired
      */
@@ -130,7 +130,7 @@ public class JwtService {
 
     /**
      * Get username from token
-     * 
+     *
      * @param token JWT token string
      * @return username nếu có, null nếu token invalid
      */
@@ -141,7 +141,7 @@ public class JwtService {
 
     /**
      * Check if token is expired
-     * 
+     *
      * @param token JWT token string
      * @return true nếu token expired hoặc invalid
      */
@@ -165,3 +165,4 @@ public class JwtService {
         return (rememberMe ? refreshTokenLongExpirationMs : refreshTokenExpirationMs) / 1000;
     }
 }
+

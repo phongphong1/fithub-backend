@@ -21,17 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileController {
     private final ProfileService profileService;
     @GetMapping("/{id}")
-    public ApiResponse<ProfileResponseDTO> getProfile(@PathVariable int id) {
+    public ApiResponse<ProfileResponseDTO> getProfile(@PathVariable Long id) {
         ProfileResponseDTO response = profileService.getProfileUserById(id);
         return new ApiResponse<>(true,response,"Success");
     }
     @PutMapping("/{id}")
     public ApiResponse<ProfileResponseDTO> updateProfile(
-            @PathVariable int id,
+            @PathVariable Long id,
             @RequestBody UpdateProfileRequest updateData) {
-
         ProfileResponseDTO response = profileService.UpdateProfile(updateData,id);
-        return new ApiResponse<>(true ,response, "Update Success");
+        return new ApiResponse<>(true ,response, "Update Profile Successfuly");
     }
 
 }
