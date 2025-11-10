@@ -1,7 +1,7 @@
 package fa.training.fithub.controller;
 
-
 import fa.training.fithub.constants.MessageConstants;
+import fa.training.fithub.dto.request.ChangePasswordRequest;
 import fa.training.fithub.dto.request.ResendVerificationEmailRequest;
 import fa.training.fithub.dto.request.RegisterRequest;
 import fa.training.fithub.dto.response.ApiResponse;
@@ -13,7 +13,6 @@ import fa.training.fithub.service.RefreshTokenService;
 import fa.training.fithub.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,7 +68,7 @@ public class AuthController {
 
     @GetMapping("/check-one-position/{refreshToken}/{accessToken}")
     public ResponseEntity<ApiResponse<?>> checkOnePosition(@PathVariable String refreshToken,
-                                                           @PathVariable String accessToken) {
+            @PathVariable String accessToken) {
         try {
             authService.checkOnePosition(refreshToken, accessToken);
             ApiResponse<Object> response = ApiResponse.builder()
@@ -88,7 +87,6 @@ public class AuthController {
         }
     }
 
-
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<NewAccessTokenResponseDTO>> newAccessToken(
             @RequestBody Map<String, String> requestBody) {
@@ -101,8 +99,7 @@ public class AuthController {
                         .success(true)
                         .data(newAccessTokenResponseDTO)
                         .message("Get new access token successful")
-                        .build()
-        );
+                        .build());
     }
 
     @PostMapping("/me-from-refresh")
@@ -115,6 +112,15 @@ public class AuthController {
                 .message("Get user from refresh token successful")
                 .build();
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse<Object>> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request) {
+        ApiResponse<Object> response = authService.changePassword(
+                request.getCurrentPassword(),
+                request.getNewPassword());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

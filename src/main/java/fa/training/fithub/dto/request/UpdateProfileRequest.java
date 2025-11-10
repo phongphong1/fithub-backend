@@ -18,24 +18,24 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class UpdateProfileRequest {
-    @NotBlank(message = "Full name không được để trống")
-    @Size(min = 2, max = 100, message = "Full name phải từ 2 đến 100 ký tự")
-    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Full name chỉ chứa chữ cái và khoảng trắng")
+    @NotBlank(message = "Full name cannot be blank")
+    @Size(min = 2, max = 100, message = "Full name must be between 2 and 100 characters")
+    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Full name can only contain letters and spaces")
     private String fullName;
 
-    @Past(message = "Ngày sinh phải là ngày trong quá khứ")
+    @Past(message = "Date of birth must be a date in the past")
     private LocalDate dateOfBirth;
 
-    @NotNull(message = "Giới tính không được để trống")
+    @NotNull(message = "Gender cannot be blank")
     private Gender gender;
 
-    @Size(max = 255, message = "Avatar URL không được vượt quá 255 ký tự")
+    @Size(max = 255, message = "Avatar URL cannot exceed 255 characters")
     private String avatarUrl;
 
-    @Size(max = 255, message = "Cover URL không được vượt quá 255 ký tự")
+    @Size(max = 255, message = "Cover URL cannot exceed 255 characters")
     private String coverUrl;
 
-    @Size(max = 1500, message = "Bio không được vượt quá 1500 ký tự")
+    @Size(max = 1500, message = "Bio cannot exceed 1500 characters")
     private String bio;
 }
 

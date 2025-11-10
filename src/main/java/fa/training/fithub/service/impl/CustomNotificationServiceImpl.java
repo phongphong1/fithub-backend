@@ -30,7 +30,7 @@ public class CustomNotificationServiceImpl implements CustomNotificationService 
         customData.put("referenceType", "post");
         customData.put("senderId", String.valueOf(liker.getId()));
 
-        String message = String.format("%s đã thích bài viết của bạn", liker.getFullName());
+        String message = String.format("%s liked your post", liker.getFullName());
 
         notificationService.sendPushNotification(
                 postOwner,
@@ -48,7 +48,7 @@ public class CustomNotificationServiceImpl implements CustomNotificationService 
         customData.put("senderId", String.valueOf(commenter.getId()));
 
         String message = String.format(
-                "%s đã bình luận: \"%s\"",
+                "%s commented: \"%s\"",
                 commenter.getFullName(),
                 commentContent.length() > 50 ? commentContent.substring(0, 50) + "..." : commentContent);
 
@@ -67,7 +67,7 @@ public class CustomNotificationServiceImpl implements CustomNotificationService 
         customData.put("referenceType", "course");
 
         String message = String.format(
-                "Bạn đã đăng ký thành công khóa học \"%s\"",
+                "You have successfully enrolled in the course \"%s\"",
                 courseName);
 
         notificationService.sendPushNotification(
@@ -85,7 +85,7 @@ public class CustomNotificationServiceImpl implements CustomNotificationService 
         customData.put("referenceType", "lesson");
 
         String message = String.format(
-                "Chúc mừng! Bạn đã hoàn thành bài học \"%s\" trong khóa học \"%s\"",
+                "Congratulations! You have completed the lesson \"%s\" in the course \"%s\"",
                 lessonName,
                 courseName);
 
@@ -105,7 +105,7 @@ public class CustomNotificationServiceImpl implements CustomNotificationService 
         customData.put("senderId", String.valueOf(replier.getId()));
 
         String message = String.format(
-                "%s đã trả lời bình luận của bạn: \"%s\"",
+                "%s replied to your comment: \"%s\"",
                 replier.getFullName(),
                 replyContent.length() > 50 ? replyContent.substring(0, 50) + "..." : replyContent);
 

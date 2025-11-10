@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Xác thực tài khoản FitHub</title>
+    <title>FitHub Account Verification</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -106,25 +106,25 @@
         <div class="card-content">
 
             <h1 class="greeting">
-                Chào <span th:text="${fullname}">bạn</span>,
+                Hello <span th:text="${fullname}">there</span>,
             </h1>
 
             <p class="text" th:text="${action_reason}">
-                Chào mừng bạn đến với FitHub! Chỉ còn một bước nữa để kích hoạt tài khoản của bạn. Vui lòng nhấp vào nút bên dưới.
+                Welcome to FitHub! Just one more step to activate your account. Please click the button below.
             </p>
 
             <div class="button-container">
                 <a th:href="${verification_link}" class="button-cta">
-                    Kích hoạt tài khoản
+                    Activate Account
                 </a>
             </div>
 
             <p class="expiry">
-                Link này sẽ hết hạn trong <strong th:text="${expiry_time}">15</strong> giờ.
+                This link will expire in <strong th:text="${expiry_time}">15</strong> hours.
             </p>
 
             <div class="fallback-link">
-                <p style="margin-top: 0;">Nếu nút không hoạt động, vui lòng sao chép và dán link này vào trình duyệt của bạn:</p>
+                <p style="margin-top: 0;">If the button doesn't work, please copy and paste this link into your browser:</p>
                 <a th:href="${verification_link}" th:text="${verification_link}" style="color: #555;">
                     https://fithub.com/verify?token=...
                 </a>
@@ -134,8 +134,8 @@
     </div>
 
     <div class="footer">
-        <p>© 2025 FitHub. Mọi quyền được bảo lưu.</p>
-        <p>Bạn nhận được email này vì đã đăng ký tài khoản tại FitHub. Nếu không phải bạn, vui lòng bỏ qua.</p>
+        <p>© 2025 FitHub. All rights reserved.</p>
+        <p>You received this email because you registered an account at FitHub. If this wasn't you, please ignore this email.</p>
     </div>
 
 </div>

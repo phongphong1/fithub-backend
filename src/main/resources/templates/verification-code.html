@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${subject_line}">Mã Xác Thực</title>
+    <title th:text="${subject_line}">Verification Code</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -62,22 +62,22 @@
     </style>
 </head>
 <body>
-<!--subject_line: Tiêu đề chính của email (ví dụ: "Mã Xác Thực Của Bạn")-->
+<!--subject_line: Main email subject (e.g.: "Your Verification Code")-->
 
-<!--action_reason: Lý do gửi mã (ví dụ: "để đặt lại mật khẩu", "để xác nhận đăng nhập")-->
+<!--action_reason: Reason for sending the code (e.g.: "to reset your password", "to confirm login")-->
 
-<!--verification_code: Mã OTP (ví dụ: "123456")-->
+<!--verification_code: OTP code (e.g.: "123456")-->
 
-<!--expiry_time: Thời gian hết hạn (ví dụ: "10 phút")-->
+<!--expiry_time: Expiration time (e.g.: "10 minutes")-->
 
 <div class="container">
-    <h1 class="header" th:text="${subject_line}">Mã Xác Thực Của Bạn</h1>
+    <h1 class="header" th:text="${subject_line}">Your Verification Code</h1>
 
     <p class="intro-text">
-        Chào bạn,
+        Hello,
     </p>
     <p class="intro-text">
-        Vui lòng sử dụng mã dưới đây để <strong th:text="${action_reason}">hoàn tất hành động của bạn</strong>.
+        Please use the code below to <strong th:text="${action_reason}">complete your action</strong>.
     </p>
 
     <div class="code-box">
@@ -85,11 +85,11 @@
     </div>
 
     <p class="expiry-text">
-        Mã này có hiệu lực trong <strong th:text="${expiry_time}">10</strong> phút.
+        This code is valid for <strong th:text="${expiry_time}">10</strong> minutes.
     </p>
 
     <p class="footer-note">
-        Nếu bạn không yêu cầu mã này, vui lòng bỏ qua email một cách an toàn.
+        If you didn't request this code, please safely ignore this email.
     </p>
 </div>
 </body>

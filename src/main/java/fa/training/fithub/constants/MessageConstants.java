@@ -17,6 +17,9 @@ public final class MessageConstants {
 
         public static final String REGISTER_SUCCESS = "Registration successful! Please check your email to verify your account.";
         public static final String REGISTER_THANK_YOU = "Thank you for registering. Please click the button below to complete the process.";
+        public static final String CHANGE_PASSWORD_SUCCESS = "Password changed successfully!";
+        public static final String INVALID_CURRENT_PASSWORD = "Current password is incorrect!";
+        public static final String NEW_PASSWORD_SAME_AS_OLD = "New password must be different from current password!";
     }
 
     // ==================== VALIDATION MESSAGES ====================

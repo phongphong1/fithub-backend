@@ -16,4 +16,6 @@ public interface AuthService {
     ApiResponse<Object> resendVerificationEmail(ResendVerificationEmailRequest request);
 
     void checkOnePosition(String refreshToken, String accessToken);
+
+    ApiResponse<Object> changePassword(String oldPassword, String newPassword);
 }

@@ -18,31 +18,31 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class RegisterRequest {
 
-    @NotBlank(message = "Username không được để trống")
-    @Size(min = 3, max = 50, message = "Username phải từ 3 đến 50 ký tự")
-    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Username chỉ chứa chữ cái, số và dấu gạch dưới")
+    @NotBlank(message = "Username cannot be blank")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Username can only contain letters, numbers and underscores")
     private String username;
 
-    @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không hợp lệ")
-    @Size(max = 100, message = "Email không được vượt quá 100 ký tự")
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email is invalid")
+    @Size(max = 100, message = "Email cannot exceed 100 characters")
     private String email;
 
-    @NotBlank(message = "Password không được để trống")
-    @Size(min = 8, max = 100, message = "Password phải từ 8 đến 100 ký tự")
+    @NotBlank(message = "Password cannot be blank")
+    @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$",
-            message = "Password phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt")
+            message = "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character")
     private String password;
 
-    @NotBlank(message = "Full name không được để trống")
-    @Size(min = 2, max = 100, message = "Full name phải từ 2 đến 100 ký tự")
-    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Full name chỉ chứa chữ cái và khoảng trắng")
+    @NotBlank(message = "Full name cannot be blank")
+    @Size(min = 2, max = 100, message = "Full name must be between 2 and 100 characters")
+    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Full name can only contain letters and spaces")
     private String fullName;
 
-    @Past(message = "Ngày sinh phải là ngày trong quá khứ")
+    @Past(message = "Date of birth must be a date in the past")
     private LocalDate dateOfBirth;
 
-    @NotNull(message = "Giới tính không được để trống")
+    @NotNull(message = "Gender cannot be blank")
     private Gender gender;
 
 }

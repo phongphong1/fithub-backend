@@ -18,6 +18,8 @@ import fa.training.fithub.util.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -135,7 +137,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         if (token.getExpiresAt().isBefore(LocalDateTime.now(ZoneOffset.UTC))) {
-            throw new ExpiredTokenException("Link kích hoạt đã hết hạn!");
+            throw new ExpiredTokenException(MessageConstants.Token.EXPIRED_TOKEN);
         }
 
         user.setStatus(UserStatus.ACTIVE);
@@ -180,14 +182,9 @@ public class AuthServiceImpl implements AuthService {
     public void checkOnePosition(String refreshToken, String accessToken) {
         // Check time access token and refresh token (so set time in FE)
         String checkTimeRefreshToken = jwtService.validateTokenAndGetUsername(refreshToken)
-                .orElseThrow(() ->
-                        new CustomException("Refresh token is invalid or expired", HttpStatus.UNAUTHORIZED)
-                );
+                .orElseThrow(() -> new CustomException("Refresh token is invalid or expired", HttpStatus.UNAUTHORIZED));
         String checkTimeAccessToken = jwtService.validateTokenAndGetUsername(refreshToken)
-                .orElseThrow(() ->
-                        new CustomException("Access token is invalid or expired", HttpStatus.UNAUTHORIZED)
-                );
-
+                .orElseThrow(() -> new CustomException("Access token is invalid or expired", HttpStatus.UNAUTHORIZED));
 
         String username = jwtService.getUsernameFromToken(refreshToken);
         if (username == null) {
@@ -206,4 +203,37 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
+    @Override
+    @Transactional
+    public ApiResponse<Object> changePassword(String oldPassword, String newPassword) {
+        // Get authenticated user from SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new UnauthorizedException("User must be authenticated to change password");
+        }
+
+        String username = ((User) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(MessageConstants.User.USER_NOT_FOUND));
+
+        // Verify current password
+        if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
+            throw new BadRequestException(MessageConstants.Auth.INVALID_CURRENT_PASSWORD);
+        }
+
+        // Check if new password is same as old password
+        if (passwordEncoder.matches(newPassword, user.getPasswordHash())) {
+            throw new BadRequestException(MessageConstants.Auth.NEW_PASSWORD_SAME_AS_OLD);
+        }
+
+        // Update password
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        return ApiResponse.<Object>builder()
+                .success(true)
+                .message(MessageConstants.Auth.CHANGE_PASSWORD_SUCCESS)
+                .data(null)
+                .build();
+    }
 }
