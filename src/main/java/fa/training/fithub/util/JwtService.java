@@ -164,5 +164,7 @@ public class JwtService {
     public long getRefreshExpSeconds(boolean rememberMe) {
         return (rememberMe ? refreshTokenLongExpirationMs : refreshTokenExpirationMs) / 1000;
     }
+
+
 }
 

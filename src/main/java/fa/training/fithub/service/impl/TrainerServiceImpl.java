@@ -68,23 +68,23 @@ public class TrainerServiceImpl implements TrainerService {
             throw new BadRequestException("Qualifications are required");
         }
 
-        if (request.getExperience_details() == null || request.getExperience_details().trim().isEmpty()) {
-            throw new BadRequestException("Experience details are required");
-        }
-
-        if (request.getCertificateUrls() == null || request.getCertificateUrls().isEmpty()) {
-            throw new BadRequestException("At least one certificate is required");
-        }
+//        if (request.getExperience_details() == null || request.getExperience_details().trim().isEmpty()) {
+//            throw new BadRequestException("Experience details are required");
+//        }
+//
+//        if (request.getCertificateUrls() == null || request.getCertificateUrls().isEmpty()) {
+//            throw new BadRequestException("At least one certificate is required");
+//        }
 
         // Create trainer application entity
         TrainerApplication application = new TrainerApplication();
         application.setUser(user);
         application.setQualifications(request.getQualifications().trim());
-        application.setExperienceDetails(request.getExperience_details().trim());
+//        application.setExperienceDetails(request.getExperience_details().trim());
 
         // Store certificate URLs in JSON format
         Map<String, Object> documentUrls = new HashMap<>();
-        documentUrls.put("certificates", request.getCertificateUrls());
+//        documentUrls.put("certificates", request.getCertificateUrls());
         application.setDocumentUrls(documentUrls);
 
         application.setStatus(ApplicationStatus.PENDING);

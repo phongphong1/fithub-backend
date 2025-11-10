@@ -1,29 +1,26 @@
 package fa.training.fithub.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Map;
 
-/**
- * DTO for trainer application request
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class TrainerApplicationRequest {
 
-    @NotBlank(message = "Qualifications are required")
+    @NotBlank(message = "Qualifications không được để trống")
+    @Size(min = 10, max = 5000, message = "Qualifications phải từ 10 đến 5000 ký tự")
     private String qualifications;
 
-    @NotBlank(message = "Experience details are required")
-    private String experience_details;
+    @Size(max = 5000, message = "Experience details không được vượt quá 5000 ký tự")
+    private String experienceDetails;
 
-    @NotEmpty(message = "At least one certificate URL is required")
-    private List<String> certificateUrls;
+    // document_urls: { "certificates": "url1,url2,url3" }
+    private Map<String, Object> documentUrls;
+
 }
